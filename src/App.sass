@@ -1,0 +1,205 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto+Mono:400,700&display=swap)
+  
+.App
+  width: 100%
+  height: 100%
+
+.main-container
+  width: 100%
+  height: 100%
+  margin: 0
+  padding: 0
+  display: flex
+  align-items: center
+  justify-content: center
+
+  .calculator
+    display: flex
+    align-self: center
+    width: 300px
+
+    *
+      font-family: 'Roboto Mono', monospace 
+      color: #FFFFFF
+
+    .inner
+      width: 100%
+      height: 100%
+
+      .notch
+        display: block
+        width: 100%
+        line-height: 0
+
+        .path-notch
+          fill: #151515
+
+      .content
+        display: block
+        width: 100%
+        background-color: #151515
+        height: 600px
+        border-bottom-left-radius: 33px
+        border-bottom-right-radius: 33px
+        overflow: hidden
+
+        .header
+          width: 100%
+          height: 7%
+          display: flex
+          padding: 5px
+          
+          .centered
+            align-self: center
+            width: 70%
+            height: 35px
+            line-height: 0
+            position: relative
+            font-weight: bold
+            text-align: center
+            line-height: 35px
+            span   
+              color: #FF3E39
+
+          [class*="btn-"]
+            align-self: center
+            width: 15%
+            height: 35px
+            line-height: 0
+            position: relative
+            cursor: pointer
+
+            &.btn-menu
+              padding: 10px 5px
+              span 
+                position: absolute
+                background-color: #FFFFFF
+                border-radius: 10px
+                height: 2px
+
+              span:nth-child(1)
+                width: 30%
+                right: 30%
+                top: 10px
+              span:nth-child(2)
+                width: 40%
+                left: 30%
+                top: 50%
+                margin-top: -1px
+              span:nth-child(3)
+                width: 30%
+                left: 30%
+                bottom: 11px
+                
+            &.btn-close
+              padding: 10px 5px
+              span 
+                position: absolute
+                background-color: #FFFFFF
+                border-radius: 10px
+                height: 2px
+                width: 40%
+                left: 30%
+                top: 50%
+                margin: -1px
+              span:nth-child(1)
+                transform: rotate(45deg)
+              span:nth-child(2)
+                transform: rotate(-45deg)
+
+        .display
+          position: relative
+          width: 100%
+          height: 30%
+
+          .current-equasion
+            position: absolute
+            width: 100%
+            color: rgba(#FFFFFF, .3)
+            text-align: center
+            top: 25%
+            font-size: .9em
+
+          .current-result
+            position: absolute
+            width: 100%
+            height: 50px
+            line-height: 50px
+            font-size: 2.2em
+            font-weight: bold
+            color: #FFFFFF
+            text-align: center
+            top: 50%
+            margin-top: -25px
+
+        .keyboard
+          position: relative
+          width: 100%
+          height: 63%
+          background-color: #1A1A1A
+          padding: 30px 15px
+
+          .row
+            width: 100%
+            display: flex
+            height: 20%
+
+            .box-button
+              width: 25%
+              padding: 10px
+              text-align: center
+
+              button
+                display: block
+                width: 45px
+                height: 45px
+                border: 0
+                background-color: transparent
+                // background-color: rgba(white, .05)
+                text-align: center
+                margin: 0
+                display: inline-block
+                border-radius: 50%
+                font-size: 1em
+                user-select: none
+                transition: ease-out .1s all
+
+                &.helper
+                  color: rgba(#FFFFFF, .3)
+
+                &.action
+                  color: #ff2520
+
+                &.number
+                  color: #FFFFFF
+                  font-weight: bold
+
+                &:focus,
+                &:focus
+                  outline: none
+                  box-shadow: none
+                  background-color: rgba(#EBEBEB, .1)
+
+                &:active,
+                &.active
+                  background-color: rgba(#EBEBEB, .1)
+                  box-shadow: 0px 0px 0px 5px rgba(#EBEBEB, .06)
+
+                &.submit
+                  color: #FFFFFF
+                  background-color: #ff2520
+                  font-weight: bold
+                  box-shadow: 0px 0px 0px 5px rgba(#ff2520, .3)
+
+                  &:focus,
+                  &.focus
+                    background-color: darken(#ff2520, 5)
+
+                  &:active,
+                  &.active
+                    background-color: darken(#ff2520, 3)
+                    box-shadow: 0px 0px 0px 5px rgba(#ff2520, .6)
+
+
+
+  
