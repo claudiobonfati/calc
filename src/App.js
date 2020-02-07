@@ -3,17 +3,77 @@ import logo from './logo.svg';
 import './App.sass';
 
 class App extends React.Component {
-  renderButton(i, c) {
+  constructor(){
+    super();
+
+    this.state = {
+      equation_first: "",
+      equation_operator: "",
+      equation_last: "",
+      equation_result: "",
+      equation_main_display: "",
+    }
+  }
+
+  renderButton(value, c) {
     return (
       <div className="box-button">
-        <button 
-        className={c}
-        
-        >
-          {i}
+        <button className={c} onClick={(e) => this.onButtonClick(value)}>
+          {value}
         </button>
       </div>
     );
+  }
+
+  renderOperator() {
+    if (this.state.current_operator != "") {
+      return (
+        <span className="operator">
+          { this.state.equation_operator }
+        </span>
+      );
+    }
+  }
+
+  onButtonClick = button => {
+    if (button === "=") {
+      // this.calc();
+    } else if (button === "C") {
+      this.clear();
+    } else if (button === "+/-") {
+      // this.moreOrLess();
+    } else if (button === "%") {
+      // Do something
+    } else if (button === "00") {
+      // Do something
+    } else if (button === ".") {
+      // Do something
+    } else if (["/","*","+","-"].indexOf(button) > -1) {
+      this.setState({
+        equation_operator: button
+      });
+    } else if (["0","1","2","3","4","5","6","7","8","9"].indexOf(button) > -1) {
+      if (!this.state.equation_operator) {
+        this.setState({
+          equation_first: this.state.equation_first + button
+        });
+      } else {
+        this.setState({
+          equation_last: this.state.equation_last + button
+        });
+      }
+    }
+  };
+
+  calc = () => {
+
+  }
+
+  clear = () => {
+    this.setState({
+      current_equation: "",
+      current_operator: ""
+    });
   }
 
   render() {
@@ -45,7 +105,9 @@ class App extends React.Component {
                 </header>
                 <div className="display">
                   <div className="current-equasion">
-                    3.50 * 100.25
+                    { this.state.equation_first }
+                    { this.renderOperator() }
+                    { this.state.equation_last }
                   </div>
                   <div className="current-result">
                     358.875
