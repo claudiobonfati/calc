@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.sass';
 
 class App extends React.Component {
@@ -11,7 +10,6 @@ class App extends React.Component {
       equation_operator: "",
       equation_last: "",
       equation_result: "",
-      equation_main_display: "",
     }
   }
 
@@ -25,11 +23,43 @@ class App extends React.Component {
     );
   }
 
+  renderDisplayEquasion() {
+    if (this.state.current_result !== "") {
+      return (
+        <div className="current-equasion">
+          {this.state.equation_first}
+          {this.renderOperator()}
+          {this.state.equation_last}
+        </div>
+      );
+    } else {
+      return null;
+    }
+  }
+
+  renderDisplayResult() {
+    if (this.state.current_result === "") {
+      return (
+        <div className="current-result">
+          {this.state.equation_first}
+          {this.renderOperator()}
+          {this.state.equation_last}
+        </div>
+      );
+    } else {
+      return (
+        <div className="current-result">
+          {this.state.equation_result}
+        </div>
+      );
+    }
+  }
+
   renderOperator() {
-    if (this.state.current_operator != "") {
+    if (this.state.current_operator !== "") {
       return (
         <span className="operator">
-          { this.state.equation_operator }
+          {this.state.equation_operator }
         </span>
       );
     }
@@ -37,7 +67,15 @@ class App extends React.Component {
 
   onButtonClick = button => {
     if (button === "=") {
-      // this.calc();
+      if (this.state.equation_result !== "") {
+        this.setState({
+          equation_first: this.state.equation_result,
+        }, () => {
+          this.calc();
+        });
+      } else {
+        this.calc();
+      }
     } else if (button === "C") {
       this.clear();
     } else if (button === "+/-") {
@@ -66,13 +104,28 @@ class App extends React.Component {
   };
 
   calc = () => {
+    let result = null;
 
+    if (this.state.equation_operator === "/")
+      result = Number(this.state.equation_first) / Number(this.state.equation_last)
+    else if (this.state.equation_operator === "*")
+      result = Number(this.state.equation_first) * Number(this.state.equation_last)
+    else if (this.state.equation_operator === "+")
+      result = Number(this.state.equation_first) + Number(this.state.equation_last)
+    else if (this.state.equation_operator === "-")
+      result = Number(this.state.equation_first) - Number(this.state.equation_last)
+
+    this.setState({
+      equation_result: result,
+    });
   }
 
   clear = () => {
     this.setState({
-      current_equation: "",
-      current_operator: ""
+      equation_first: "",
+      equation_operator: "",
+      equation_last: "",
+      equation_result: "",
     });
   }
 
@@ -103,46 +156,58 @@ class App extends React.Component {
                     <span></span>
                   </div>
                 </header>
-                <div className="display">
-                  <div className="current-equasion">
-                    { this.state.equation_first }
-                    { this.renderOperator() }
-                    { this.state.equation_last }
+                {this.state.current_result}
+                {this.state.current_result === "" ? (
+                  <div className="display">
+                    <div className="current-equasion"></div>
+                    <div className="current-result">
+                      {this.state.equation_first}
+                      {this.renderOperator()}
+                      {this.state.equation_last}
+                    </div>
                   </div>
-                  <div className="current-result">
-                    358.875
+                ):(
+                  <div className="display">
+                    <div className="current-equasion">
+                      {this.state.equation_first}
+                      {this.renderOperator()}
+                      {this.state.equation_last}
+                    </div>
+                    <div className="current-result">
+                      {this.state.equation_result}
+                    </div>
                   </div>
-                </div>
+                )}
                 <div className="keyboard">
                   <div className="row">
-                    { this.renderButton("C", "helper") }
-                    { this.renderButton("+/-", "helper") }
-                    { this.renderButton("%", "helper") }
-                    { this.renderButton("/", "action") }
+                    {this.renderButton("(", "helper")}
+                    {this.renderButton(")", "helper")}
+                    {this.renderButton("%", "helper")}
+                    {this.renderButton("C", "action")}
                   </div>
                   <div className="row">
-                    { this.renderButton("7", "number") }
-                    { this.renderButton("8", "number") }
-                    { this.renderButton("9", "number") }
-                    { this.renderButton("*", "action") }
+                    {this.renderButton("7", "number")}
+                    {this.renderButton("8", "number")}
+                    {this.renderButton("9", "number")}
+                    {this.renderButton("/", "action")}
                   </div>
                   <div className="row">
-                    { this.renderButton("4", "number") }
-                    { this.renderButton("4", "number") }
-                    { this.renderButton("6", "number") }
-                    { this.renderButton("+", "action") }
+                    {this.renderButton("4", "number")}
+                    {this.renderButton("4", "number")}
+                    {this.renderButton("6", "number")}
+                    {this.renderButton("*", "action")}
                   </div>
                   <div className="row">
-                    { this.renderButton("1", "number") }
-                    { this.renderButton("2", "number") }
-                    { this.renderButton("3", "number") }
-                    { this.renderButton("-", "action") }
+                    {this.renderButton("1", "number")}
+                    {this.renderButton("2", "number")}
+                    {this.renderButton("3", "number")}
+                    {this.renderButton("-", "action")}
                   </div>
                   <div className="row">
-                    { this.renderButton("00", "helper") }
-                    { this.renderButton("0", "number") }
-                    { this.renderButton(".", "helper") }
-                    { this.renderButton("=", "submit") }
+                    {this.renderButton(".", "helper")}
+                    {this.renderButton("0", "number")}
+                    {this.renderButton("=", "submit")}
+                    {this.renderButton("+", "action")}
                   </div>
                 </div>
               </div>
