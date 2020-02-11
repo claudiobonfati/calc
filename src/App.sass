@@ -3,6 +3,39 @@
 .App
   width: 100%
   height: 100%
+  background-color: #EBEBEB
+  position: relative
+  overflow: hidden
+
+  &::after
+    display: block
+    content: " "
+    width: 90%
+    padding-bottom: 90%
+    border-radius: 50%
+    background-color: #F0F0F0
+    position: absolute
+    left: -30%
+    top: -30%
+    animation-name: down-up
+    animation-duration: 15s
+    animation-fill-mode: forwards
+    animation-iteration-count: infinite
+
+  &::before
+    display: block
+    content: " "
+    width: 90%
+    padding-bottom: 90%
+    border-radius: 50%
+    background-color: #E5E5E5
+    position: absolute
+    right: -30%
+    bottom: -30%
+    animation-name: up-down
+    animation-duration: 15s
+    animation-fill-mode: forwards
+    animation-iteration-count: infinite
 
 .main-container
   width: 100%
@@ -17,6 +50,7 @@
     display: flex
     align-self: center
     width: 300px
+    z-index: 5
 
     *
       font-family: 'Roboto Mono', monospace 
@@ -117,8 +151,11 @@
             width: 100%
             color: rgba(#FFFFFF, .3)
             text-align: center
-            top: 25%
+            top: 24%
             font-size: .9em
+            height: 25px
+            padding: 0 30px
+            overflow: scroll
 
           .current-result
             position: absolute
@@ -131,6 +168,8 @@
             text-align: center
             top: 50%
             margin-top: -25px
+            padding: 0 30px
+            overflow: scroll
 
           .operator
             padding-left: 5px
@@ -181,7 +220,7 @@
                   font-weight: bold
 
                 &:focus,
-                &:focus
+                &.focus
                   outline: none
                   box-shadow: none
                   background-color: rgba(#EBEBEB, .1)
@@ -207,5 +246,18 @@
                     box-shadow: 0px 0px 0px 5px rgba(#ff2520, .6)
 
 
+@keyframes down-up
+  0%
+    transform: translate(0, 0%)
+  50%
+    transform: translate(0, 50%)
+  100%
+    transform: translate(0, 0%)
 
-  
+@keyframes up-down
+  0%
+    transform: translate(0, 0%)
+  50%
+    transform: translate(0, -50%)
+  100%
+    transform: translate(0, 0%)

@@ -2,7 +2,7 @@ import React from 'react';
 import './App.sass';
 
 class App extends React.Component {
-  constructor(){
+  constructor() {
     super();
 
     this.state = {
@@ -10,52 +10,66 @@ class App extends React.Component {
       equation_operator: "",
       equation_last: "",
       equation_result: "",
+      focus_button: "",
+      active_button: "",
     }
   }
 
-  renderButton(value, c) {
+  componentDidMount = () => {
+    document.addEventListener("keydown", event => {
+      if (["0","1","2","3","4","5","6","7","8","9","C","Clear","Delete","Backspace","%",".","/","*","-","+","=","Enter"].indexOf(event.key) > -1) { 
+        this.onButtonClick(event.key);
+      }
+    }, false);
+    document.addEventListener("keyup", event => { this.clearButtonActive() }, false);
+    document.addEventListener("mouseup", event => { this.clearButtonActive() }, false);
+  }
+
+  renderButton = (value, c) => {
     return (
       <div className="box-button">
-        <button className={c} onClick={(e) => this.onButtonClick(value)}>
+        <button className={c + (this.state.focus_button === value  ? ' focus' : '') + (this.state.active_button === value  ? ' active' : '')} onClick={(e) => this.onButtonClick(value)}>
           {value}
         </button>
       </div>
     );
   }
 
-  renderDisplayEquasion() {
-    if (this.state.current_result !== "") {
-      return (
-        <div className="current-equasion">
-          {this.state.equation_first}
-          {this.renderOperator()}
-          {this.state.equation_last}
-        </div>
-      );
-    } else {
-      return null;
-    }
+  clearButtonActive = () => {
+    this.setState({
+      active_button: "",
+    });
   }
 
-  renderDisplayResult() {
-    if (this.state.current_result === "") {
+  renderDisplay = () => {
+    if (this.state.equation_result === "") {
       return (
-        <div className="current-result">
-          {this.state.equation_first}
-          {this.renderOperator()}
-          {this.state.equation_last}
+        <div className="display">
+          <div className="current-equasion"></div>
+          <div className="current-result">
+            {this.maskThousand(this.state.equation_first)}
+            {this.renderOperator()}
+            {this.maskThousand(this.state.equation_last)}
+          </div>
         </div>
       );
     } else {
       return (
-        <div className="current-result">
-          {this.state.equation_result}
+        <div className="display">
+          <div className="current-equasion">
+            {this.maskThousand(this.state.equation_first)}
+            {this.renderOperator()}
+            {this.maskThousand(this.state.equation_last)}
+          </div>
+          <div className="current-result">
+            {this.maskDecimal(this.state.equation_result)}
+          </div>
         </div>
       );
     }
   }
 
-  renderOperator() {
+  renderOperator = () => {
     if (this.state.current_operator !== "") {
       return (
         <span className="operator">
@@ -66,7 +80,7 @@ class App extends React.Component {
   }
 
   onButtonClick = button => {
-    if (button === "=") {
+    if (button === "=" || button === "Enter") {
       if (this.state.equation_result !== "") {
         this.setState({
           equation_first: this.state.equation_result,
@@ -74,32 +88,112 @@ class App extends React.Component {
           this.calc();
         });
       } else {
-        this.calc();
+        if (this.state.equation_last === "") {
+          this.setState({
+            equation_last: "0",
+          }, () => {
+            this.calc();
+          });
+        } else {
+          this.calc();
+        }
+  
+        this.setState({
+          focus_button: "=",
+          active_button: "=",
+        });
       }
-    } else if (button === "C") {
+    } else if (["C","Clear","Delete","Backspace"].indexOf(button) > -1) {
       this.clear();
-    } else if (button === "+/-") {
-      // this.moreOrLess();
-    } else if (button === "%") {
-      // Do something
+
+      this.setState({
+        focus_button: "C",
+        active_button: "C",
+      });
     } else if (button === "00") {
       // Do something
+    } else if (button === "+/-") {
+      // Switch Signals
+    } else if (button === "%") {
+      // Do something
+
+      this.setState({
+        focus_button: button,
+        active_button: button,
+      });
     } else if (button === ".") {
       // Do something
-    } else if (["/","*","+","-"].indexOf(button) > -1) {
+
       this.setState({
-        equation_operator: button
+        focus_button: button,
+        active_button: button,
       });
-    } else if (["0","1","2","3","4","5","6","7","8","9"].indexOf(button) > -1) {
-      if (!this.state.equation_operator) {
+    } else if (["/", "*", "+", "-"].indexOf(button) > -1) {
+      if (this.state.equation_first !== "") {
+        if (this.state.equation_operator === "" || this.state.equation_last === "") {
+          this.setState({
+            equation_operator: button,
+            active_button: button,
+          }); 
+        } else {
+          this.calc();
+          this.setState({
+            equation_operator: button,
+            active_button: button,
+          });
+        }
+
         this.setState({
-          equation_first: this.state.equation_first + button
-        });
-      } else {
-        this.setState({
-          equation_last: this.state.equation_last + button
+          focus_button: button,
+          active_button: button,
         });
       }
+    } else if (["1","2","3","4","5","6","7","8","9"].indexOf(button) > -1) {
+      if (!this.state.equation_operator) {
+        if (this.state.equation_first !== "0") {
+          this.setState({
+            equation_first: this.state.equation_first + button
+          });
+        } else {
+          this.setState({
+            equation_first: button
+          });
+        }
+      } else {
+        if (this.state.equation_last !== "0") {
+          this.setState({
+            equation_last: this.state.equation_last + button
+          });
+        } else {
+          this.setState({
+            equation_last: button
+          });
+        }
+      }
+
+      this.setState({
+        focus_button: button,
+        active_button: button,
+      });
+    } else if (button === "0") {
+      if (!this.state.equation_operator) {
+        if (this.state.equation_first !== "0") {
+          this.setState({
+            equation_first: this.state.equation_first + button
+          });
+        }
+      } else {
+        if (this.state.equation_first !== "0") {
+          this.setState({
+            equation_last: this.state.equation_last + button
+          });
+        }
+      }
+
+      this.setState({
+        focus_button: button,
+        active_button: button,
+      });
     }
   };
 
@@ -129,6 +223,16 @@ class App extends React.Component {
     });
   }
 
+  maskThousand(val) {
+    return String(val).split("").reverse().join("")
+    .replace(/(\d{3}\B)/g, "$1.")
+    .split("").reverse().join("");
+  }
+
+  maskDecimal(val) {
+    val = val.toFixed(2);
+    return  String(val).replace(".", ",")
+  }
   render() {
     return (
       <div className="App">
@@ -156,58 +260,37 @@ class App extends React.Component {
                     <span></span>
                   </div>
                 </header>
-                {this.state.current_result}
-                {this.state.current_result === "" ? (
-                  <div className="display">
-                    <div className="current-equasion"></div>
-                    <div className="current-result">
-                      {this.state.equation_first}
-                      {this.renderOperator()}
-                      {this.state.equation_last}
-                    </div>
-                  </div>
-                ):(
-                  <div className="display">
-                    <div className="current-equasion">
-                      {this.state.equation_first}
-                      {this.renderOperator()}
-                      {this.state.equation_last}
-                    </div>
-                    <div className="current-result">
-                      {this.state.equation_result}
-                    </div>
-                  </div>
-                )}
+                {this.renderDisplay()}
                 <div className="keyboard">
                   <div className="row">
-                    {this.renderButton("(", "helper")}
-                    {this.renderButton(")", "helper")}
+                    {this.renderButton("C", "helper")}
+                    {this.renderButton("+/-", "helper")}
                     {this.renderButton("%", "helper")}
-                    {this.renderButton("C", "action")}
+                    {this.renderButton("/", "action")}
                   </div>
                   <div className="row">
                     {this.renderButton("7", "number")}
                     {this.renderButton("8", "number")}
                     {this.renderButton("9", "number")}
-                    {this.renderButton("/", "action")}
+                    {this.renderButton("*", "action")}
                   </div>
                   <div className="row">
                     {this.renderButton("4", "number")}
-                    {this.renderButton("4", "number")}
+                    {this.renderButton("5", "number")}
                     {this.renderButton("6", "number")}
-                    {this.renderButton("*", "action")}
+                    {this.renderButton("-", "action")}
                   </div>
                   <div className="row">
                     {this.renderButton("1", "number")}
                     {this.renderButton("2", "number")}
                     {this.renderButton("3", "number")}
-                    {this.renderButton("-", "action")}
+                    {this.renderButton("+", "action")}
                   </div>
                   <div className="row">
-                    {this.renderButton(".", "helper")}
+                    {this.renderButton("CE", "helper")}
                     {this.renderButton("0", "number")}
+                    {this.renderButton(".", "helper")}
                     {this.renderButton("=", "submit")}
-                    {this.renderButton("+", "action")}
                   </div>
                 </div>
               </div>
