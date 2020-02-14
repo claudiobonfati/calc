@@ -47,9 +47,9 @@ class App extends React.Component {
         <div className="display">
           <div className="current-equasion"></div>
           <div className="current-result">
-            {this.maskThousand(this.state.equation_first)}
+            {this.maskDecimal(this.state.equation_first)}
             {this.renderOperator()}
-            {this.maskThousand(this.state.equation_last)}
+            {this.maskDecimal(this.state.equation_last)}
           </div>
         </div>
       );
@@ -57,9 +57,9 @@ class App extends React.Component {
       return (
         <div className="display">
           <div className="current-equasion">
-            {this.maskThousand(this.state.equation_first)}
+            {this.maskDecimal(this.state.equation_first)}
             {this.renderOperator()}
-            {this.maskThousand(this.state.equation_last)}
+            {this.maskDecimal(this.state.equation_last)}
           </div>
           <div className="current-result">
             {this.maskDecimal(this.state.equation_result)}
@@ -73,7 +73,7 @@ class App extends React.Component {
     if (this.state.current_operator !== "") {
       return (
         <span className="operator">
-          {this.state.equation_operator }
+          {this.state.equation_operator}
         </span>
       );
     }
@@ -97,19 +97,12 @@ class App extends React.Component {
         } else {
           this.calc();
         }
-  
-        this.setState({
-          focus_button: "=",
-          active_button: "=",
-        });
       }
+
+      this.focusButton("=");
     } else if (["C","Clear","Delete","Backspace"].indexOf(button) > -1) {
       this.clear();
-
-      this.setState({
-        focus_button: "C",
-        active_button: "C",
-      });
+      this.focusButton("C");
     } else if (button === "00") {
       // Do something
     } else if (button === "+/-") {
@@ -117,36 +110,33 @@ class App extends React.Component {
     } else if (button === "%") {
       // Do something
 
-      this.setState({
-        focus_button: button,
-        active_button: button,
-      });
+      this.focusButton(button);
     } else if (button === ".") {
-      // Do something
+      if (this.state.equation_first !== "" && this.state.equation_first.indexOf(".") === -1 && this.state.equation_operator === "") { // If current input is 'equation_first'
+        this.setState({
+          equation_first: this.state.equation_first + ".",
+        });
+      } else if (this.state.equation_last !== "" && this.state.equation_last.indexOf(".") === -1 && this.state.equation_operator !== "") { // If current input is 'equation_last'
+        this.setState({
+          equation_last: this.state.equation_last + ".",
+        });
+      }
 
-      this.setState({
-        focus_button: button,
-        active_button: button,
-      });
+      this.focusButton(button);
     } else if (["/", "*", "+", "-"].indexOf(button) > -1) {
       if (this.state.equation_first !== "") {
         if (this.state.equation_operator === "" || this.state.equation_last === "") {
           this.setState({
             equation_operator: button,
-            active_button: button,
           }); 
         } else {
           this.calc();
           this.setState({
             equation_operator: button,
-            active_button: button,
           });
         }
 
-        this.setState({
-          focus_button: button,
-          active_button: button,
-        });
+        this.focusButton(button);
       }
     } else if (["1","2","3","4","5","6","7","8","9"].indexOf(button) > -1) {
       if (!this.state.equation_operator) {
@@ -171,10 +161,7 @@ class App extends React.Component {
         }
       }
 
-      this.setState({
-        focus_button: button,
-        active_button: button,
-      });
+      this.focusButton(button);
     } else if (button === "0") {
       if (!this.state.equation_operator) {
         if (this.state.equation_first !== "0") {
@@ -190,12 +177,16 @@ class App extends React.Component {
         }
       }
 
-      this.setState({
-        focus_button: button,
-        active_button: button,
-      });
+      this.focusButton(button);
     }
   };
+
+  focusButton = button => {
+    this.setState({
+      focus_button: button,
+      active_button: button,
+    });
+  }
 
   calc = () => {
     let result = null;
@@ -223,16 +214,10 @@ class App extends React.Component {
     });
   }
 
-  maskThousand(val) {
-    return String(val).split("").reverse().join("")
-    .replace(/(\d{3}\B)/g, "$1.")
-    .split("").reverse().join("");
+  maskDecimal = val => {
+    return val.toString().replace(".", ",");
   }
 
-  maskDecimal(val) {
-    val = val.toFixed(2);
-    return  String(val).replace(".", ",")
-  }
   render() {
     return (
       <div className="App">
@@ -241,7 +226,6 @@ class App extends React.Component {
             <div className="inner">
               <div className="notch">
                 <svg id="svg-notch" data-name="Notch" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 318.21 41.32">
-                  <title>notch</title>
                   <path className="path-notch" d="M318.21,41.32v-3.6A37.72,37.72,0,0,0,280.49,0H255.35c-4.39,0-8,1.05-8,5.94,0,.28-.17,3.44-.17,3.44-.63,8.93-7.26,15.5-16.63,16.07l-71.49.15-71.49-.15c-9.37-.57-16-7.14-16.62-16.07,0,0-.18-3.16-.18-3.44,0-4.89-3.56-5.94-8-5.94H37.72A37.72,37.72,0,0,0,0,37.72v3.6"/>
                 </svg>
               </div>
