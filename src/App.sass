@@ -1,11 +1,44 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto+Mono:400,700&display=swap)
   
+$base-ease: cubic-bezier(0.25, 0.46, 0.45, 0.84)
+$base-duration: 300ms
+
+$color-black-dark: #151515
+$color-black-medium: #151515
+$color-black-light: #1A1A1A
+
+$color-white-dark: #FAFAFA
+$color-white-medium: #EBEBEB
+$color-white-light: #FFFFFF
+
+$color-red: #FF3E39
+
 .App
   width: 100%
   height: 100%
-  background-color: #EBEBEB
+  background-color: $color-white-medium
   position: relative
   overflow: hidden
+  -webkit-transition: background-color $base-duration $base-ease
+  -moz-transition: background-color $base-duration $base-ease
+  -o-transition: background-color $base-duration $base-ease
+  transition: background-color $base-duration $base-ease
+
+  &::after,
+  &::before,
+  .main-container .calculator *,
+  .main-container .calculator .inner .notch .path-notch
+  .main-container .calculator .inner .content,
+  .main-container .calculator .inner .content .header .centered,
+  .main-container .calculator .inner .content .header .btn-menu span,
+  .main-container .calculator .inner .content .header .btn-close span,
+  .main-container .calculator .inner .content .display .old-equation,
+  .main-container .calculator .inner .content .display .current-equation,
+  .main-container .calculator .inner .content .keyboard
+    -webkit-transition: all $base-duration $base-ease
+    -moz-transition: all $base-duration $base-ease
+    -o-transition: all $base-duration $base-ease
+    transition: all $base-duration $base-ease
 
   &::after
     display: block
@@ -17,8 +50,12 @@
     position: absolute
     left: -30%
     top: -30%
+    -webkit-transition: background-color $base-duration $base-ease
+    -moz-transition: background-color $base-duration $base-ease
+    -o-transition: background-color $base-duration $base-ease
+    transition: background-color $base-duration $base-ease
     animation-name: down-up
-    animation-duration: 15s
+    animation-duration: 55s
     animation-fill-mode: forwards
     animation-iteration-count: infinite
 
@@ -32,219 +69,490 @@
     position: absolute
     right: -30%
     bottom: -30%
+    -webkit-transition: background-color $base-duration $base-ease
+    -moz-transition: background-color $base-duration $base-ease
+    -o-transition: background-color $base-duration $base-ease
+    transition: background-color $base-duration $base-ease
     animation-name: up-down
-    animation-duration: 15s
+    animation-duration: 55s
     animation-fill-mode: forwards
     animation-iteration-count: infinite
 
-.main-container
-  width: 100%
-  height: 100%
-  margin: 0
-  padding: 0
-  display: flex
-  align-items: center
-  justify-content: center
-
-  .calculator
+  .main-container
+    width: 100%
+    height: 100%
+    margin: 0
+    padding: 0
     display: flex
-    align-self: center
-    width: 300px
-    z-index: 5
+    align-items: center
+    justify-content: center
+    position: relative
 
-    *
-      font-family: 'Roboto Mono', monospace 
-      color: #FFFFFF
+    .calculator
+      display: flex
+      align-self: center
+      width: 300px
+      z-index: 5
 
-    .inner
-      width: 100%
-      height: 100%
+      *
+        font-family: 'Roboto Mono', monospace 
+        color: $color-white-light
 
-      .notch
-        display: block
+      .inner
         width: 100%
-        line-height: 0
+        height: 100%
 
-        .path-notch
-          fill: #151515
-
-      .content
-        display: block
-        width: 100%
-        background-color: #151515
-        height: 600px
-        border-bottom-left-radius: 33px
-        border-bottom-right-radius: 33px
-        overflow: hidden
-
-        .header
+        .notch
+          display: block
           width: 100%
-          height: 7%
-          display: flex
-          padding: 5px
-          
-          .centered
-            align-self: center
-            width: 70%
-            height: 35px
-            line-height: 0
-            position: relative
-            font-weight: bold
-            text-align: center
-            line-height: 35px
-            span   
-              color: #FF3E39
+          line-height: 0
 
-          [class*="btn-"]
-            align-self: center
-            width: 15%
-            height: 35px
-            line-height: 0
-            position: relative
-            cursor: pointer
+          .path-notch
+            fill: $color-black-dark
 
-            &.btn-menu
-              padding: 10px 5px
-              span 
-                position: absolute
-                background-color: #FFFFFF
-                border-radius: 10px
-                height: 2px
-
-              span:nth-child(1)
-                width: 30%
-                right: 30%
-                top: 10px
-              span:nth-child(2)
-                width: 40%
-                left: 30%
-                top: 50%
-                margin-top: -1px
-              span:nth-child(3)
-                width: 30%
-                left: 30%
-                bottom: 11px
-                
-            &.btn-close
-              padding: 10px 5px
-              span 
-                position: absolute
-                background-color: #FFFFFF
-                border-radius: 10px
-                height: 2px
-                width: 40%
-                left: 30%
-                top: 50%
-                margin: -1px
-              span:nth-child(1)
-                transform: rotate(45deg)
-              span:nth-child(2)
-                transform: rotate(-45deg)
-
-        .display
-          position: relative
+        .content
+          display: block
           width: 100%
-          height: 30%
+          background-color: $color-black-dark
+          height: 600px
+          border-bottom-left-radius: 33px
+          border-bottom-right-radius: 33px
+          overflow: hidden
 
-          .current-equasion
-            position: absolute
+          .header
             width: 100%
-            color: rgba(#FFFFFF, .3)
-            text-align: center
-            top: 24%
-            font-size: .9em
-            height: 25px
-            padding: 0 30px
-            overflow: scroll
-
-          .current-result
-            position: absolute
-            width: 100%
-            height: 50px
-            line-height: 50px
-            font-size: 2.2em
-            font-weight: bold
-            color: #FFFFFF
-            text-align: center
-            top: 50%
-            margin-top: -25px
-            padding: 0 30px
-            overflow: scroll
-
-          .operator
-            padding-left: 5px
-            padding-right: 5px
-            font-weight: bold
-            color: #FF3E39
-
-        .keyboard
-          position: relative
-          width: 100%
-          height: 63%
-          background-color: #1A1A1A
-          padding: 30px 15px
-
-          .row
-            width: 100%
+            height: 7%
             display: flex
-            height: 20%
-
-            .box-button
-              width: 25%
-              padding: 10px
+            padding: 5px
+            
+            .centered
+              align-self: center
+              width: 70%
+              height: 35px
+              font-size: 1em
+              line-height: 0
+              position: relative
+              font-weight: bold
               text-align: center
+              line-height: 35px
+              span   
+                color: #FF3E39
 
-              button
-                display: block
-                width: 45px
-                height: 45px
-                border: 0
-                background-color: transparent
-                // background-color: rgba(white, .05)
+            [class*="btn-"]
+              align-self: center
+              width: 15%
+              height: 35px
+              line-height: 0
+              position: relative
+              cursor: pointer
+
+              &.btn-menu
+                padding: 10px 5px
+                span 
+                  position: absolute
+                  background-color: $color-white-light
+                  border-radius: 10px
+                  height: 2px
+
+                span:nth-child(1)
+                  width: 30%
+                  right: 30%
+                  top: 10px
+                span:nth-child(2)
+                  width: 40%
+                  left: 30%
+                  top: 50%
+                  margin-top: -1.5px
+                span:nth-child(3)
+                  width: 30%
+                  left: 30%
+                  bottom: 11px
+                  
+              &.btn-close
+                padding: 10px 5px
+                span 
+                  position: absolute
+                  background-color: $color-white-light
+                  border-radius: 10px
+                  height: 2px
+                  width: 40%
+                  left: 30%
+                  top: 50%
+                  margin: -1px
+                span:nth-child(1)
+                  transform: rotate(45deg)
+                span:nth-child(2)
+                  transform: rotate(-45deg)
+
+          .display
+            position: relative
+            width: 100%
+            height: 30%
+
+            &::after,
+            &::before,
+              display: none
+              content: " "
+              position: absolute
+              width: 25px
+              height: 100%
+              top: 0
+              z-index: 1
+
+            &::after
+              left: 0
+              background: linear-gradient(90deg, rgba($color-black-dark,1) 0%, rgba($color-black-dark,1) 20%, rgba($color-black-dark,0) 100%)
+            &::before
+              right: 0
+              background: linear-gradient(270deg, rgba($color-black-dark,1) 0%, rgba($color-black-dark,1) 20%, rgba($color-black-dark,0) 100%)
+
+            .old-equation
+              position: absolute
+              width: 100%
+              color: rgba($color-white-light, .3)
+              text-align: center
+              top: 24%
+              font-size: .9em
+              height: 25px
+              padding: 0 30px
+              overflow-x: scroll
+              -ms-overflow-style: none
+              &::-webkit-scrollbar 
+                width: 0 !important
+                height: 0 !important
+
+              &.count-characters-27
+                font-size: .86em
+              &.count-characters-28
+                font-size: .82em
+              &.count-characters-29
+                font-size: .78em
+              &.count-characters-30
+                font-size: .74em
+              &.count-characters-31
+                font-size: .70em
+              &.count-characters-32
+                font-size: .66em
+              &.count-characters-33,
+              &.count-characters-34,
+              &.count-characters-35,
+              &.count-characters-36,
+              &.count-characters-37,
+              &.count-characters-38,
+              &.count-characters-39,
+              &.count-characters-40,
+              &.count-characters-41,
+              &.count-characters-42,
+              &.count-characters-42,
+              &.count-characters-44,
+              &.count-characters-45,
+              &.count-characters-46,
+              &.count-characters-47,
+              &.count-characters-48,
+              &.count-characters-49,
+              &.count-characters-50
+                font-size: .65em
+
+            .current-equation
+              position: absolute
+              width: 100%
+              height: 115px
+              line-height: 50px
+              font-size: 0.82em
+              font-weight: bold
+              color: $color-white-light
+              text-align: center
+              top: 50%
+              margin-top: -25px
+              padding: 0 30px
+              overflow-x: scroll
+              white-space: nowrap
+              -ms-overflow-style: none
+              &::-webkit-scrollbar 
+                width: 0 !important
+                height: 0 !important
+
+              &.count-characters-0,
+              &.count-characters-1,
+              &.count-characters-2,
+              &.count-characters-3,
+              &.count-characters-4,
+              &.count-characters-5,
+              &.count-characters-6,
+              &.count-characters-7,
+              &.count-characters-8,
+              &.count-characters-9,
+                font-size: 2.2em
+
+              &.count-characters-10
+                font-size: 2.05em
+              &.count-characters-11
+                font-size: 1.95em
+              &.count-characters-12
+                font-size: 1.80em
+              &.count-characters-13
+                font-size: 1.70em
+              &.count-characters-14
+                font-size: 1.58em
+              &.count-characters-15
+                font-size: 1.47em
+              &.count-characters-16
+                font-size: 1.38em
+              &.count-characters-17
+                font-size: 1.30em
+              &.count-characters-18
+                font-size: 1.24em
+              &.count-characters-19
+                font-size: 1.18em
+              &.count-characters-20
+                font-size: 1.12em
+              &.count-characters-21
+                font-size: 1.07em
+              &.count-characters-22
+                font-size: 1.01em
+              &.count-characters-23
+                font-size: 0.98em
+              &.count-characters-24
+                font-size: 0.94em
+              &.count-characters-25
+                font-size: 0.91em
+              &.count-characters-26
+                font-size: 0.88em
+              &.count-characters-27
+                font-size: 0.85em
+
+            .operator
+              padding-left: 5px
+              padding-right: 5px
+              font-weight: bold
+              color: #FF3E39 !important
+
+          .keyboard
+            position: relative
+            width: 100%
+            height: 63%
+            background-color: $color-black-light
+            padding: 30px 15px
+
+            .row
+              width: 100%
+              display: flex
+              height: 20%
+
+              .box-button
+                width: 25%
+                padding: 10px
                 text-align: center
-                margin: 0
-                display: inline-block
-                border-radius: 50%
-                font-size: 1em
-                user-select: none
-                transition: ease-out .1s all
+                display: flex
+                justify-content: center
+                align-items: center
 
-                &.helper
-                  color: rgba(#FFFFFF, .3)
+                button
+                  display: block
+                  width: 45px
+                  height: 45px
+                  border: 0
+                  background-color: transparent
+                  text-align: center
+                  margin: 0
+                  display: inline-block
+                  border-radius: 50%
+                  font-size: 1em
+                  -webkit-transition: all .2s $base-ease
+                  -moz-transition: all .2s $base-ease
+                  -o-transition: all .2s $base-ease
+                  transition: all .2s $base-ease
 
-                &.action
-                  color: #ff2520
+                  &.helper
+                    color: rgba($color-white-light, .3)
 
-                &.number
-                  color: #FFFFFF
-                  font-weight: bold
+                  &.action
+                    color: #ff2520 !important
 
-                &:focus,
-                &.focus
-                  outline: none
-                  box-shadow: none
-                  background-color: rgba(#EBEBEB, .1)
-
-                &:active,
-                &.active
-                  background-color: rgba(#EBEBEB, .1)
-                  box-shadow: 0px 0px 0px 5px rgba(#EBEBEB, .06)
-
-                &.submit
-                  color: #FFFFFF
-                  background-color: #ff2520
-                  font-weight: bold
-                  box-shadow: 0px 0px 0px 5px rgba(#ff2520, .3)
+                  &.number
+                    color: $color-white-light
+                    font-weight: bold
 
                   &:focus,
                   &.focus
-                    background-color: darken(#ff2520, 5)
+                    outline: none
+                    box-shadow: none
+                    background-color: rgba($color-white-medium, .1)
 
                   &:active,
                   &.active
-                    background-color: darken(#ff2520, 3)
-                    box-shadow: 0px 0px 0px 5px rgba(#ff2520, .6)
+                    background-color: rgba($color-white-medium, .1)
+                    box-shadow: 0px 0px 0px 5px rgba($color-white-medium, .06)
 
+                  &.submit
+                    color: $color-white-light
+                    background-color: #ff2520
+                    font-weight: bold
+                    box-shadow: 0px 0px 0px 5px rgba(#ff2520, .3)
+
+                    // &:focus,
+                    &.focus
+                      background-color: darken(#ff2520, 5)
+
+                    &:active,
+                    &.active
+                      background-color: darken(#ff2520, 3)
+                      box-shadow: 0px 0px 0px 5px rgba(#ff2520, .6)
+
+    [class*="credit-"]
+      position: absolute
+      z-index: 5
+      width: 300px
+      font-size: 13px
+      font-family: 'Roboto Mono', monospace
+      -webkit-transition: color $base-duration $base-ease
+      -moz-transition: color $base-duration $base-ease
+      -o-transition: color $base-duration $base-ease
+      transition: color $base-duration $base-ease
+      &.credit-bottom-left
+        bottom: 15px
+        left: 15px
+        text-align: left
+      &.credit-bottom-right
+        bottom: 15px
+        right: 15px
+        text-align: right
+      a
+        color: $color-black-dark
+        text-decoration: none
+        display: contents
+        &:hover,
+        &:focus,
+        &:visited,
+          color: $color-black-dark
+          text-decoration: none
+
+  &.theme-dark
+    &::after
+      background-color: #F0F0F0
+    &::before
+      background-color: #E5E5E5
+    .main-container 
+      .calculator
+        * 
+          color: $color-white-light
+        .inner
+          .notch .path-notch
+            -webkit-transition: fill $base-duration $base-ease
+            -moz-transition: fill $base-duration $base-ease
+            -o-transition: fill $base-duration $base-ease
+            transition: fill $base-duration $base-ease
+            fill: $color-black-dark
+        .content
+          background-color: $color-black-dark
+          .header .centered
+            .btn-menu,
+            .btn-close,
+              span 
+                background-color: $color-white-light
+          .display
+            &::after
+              background: linear-gradient(90deg, rgba($color-black-dark,1) 0%, rgba($color-black-dark,1) 20%, rgba($color-black-dark,0) 100%)
+            &::before
+              background: linear-gradient(270deg, rgba($color-black-dark,1) 0%, rgba($color-black-dark,1) 20%, rgba($color-black-dark,0) 100%)
+            .old-equation
+              color: rgba($color-white-light, .3)
+            .current-equation
+              color: $color-white-light
+          .keyboard
+            background-color: $color-black-light
+            .row
+              .box-button
+                button
+                  &.helper
+                    color: rgba($color-white-light, .3)
+                  &.number
+                    color: $color-white-light
+                  &:focus,
+                  &.focus
+                    background-color: rgba($color-white-medium, .1)
+                  &:active,
+                  &.active
+                    background-color: rgba($color-white-medium, .1)
+                    box-shadow: 0px 0px 0px 5px rgba($color-white-medium, .06)
+      [class*="credit-"]
+        color: $color-black-dark
+        a
+          &:hover,
+          &:focus,
+          &:visited,
+            color: $color-black-light
+
+  &.theme-light
+    background-color: darken($color-black-light, .9)
+    &::after
+      background-color: $color-black-light
+    &::before
+      background-color: $color-black-dark
+    .main-container 
+      .calculator
+        * 
+          color: $color-black-light
+        .inner
+          .notch .path-notch
+            -webkit-transition: fill $base-duration $base-ease
+            -moz-transition: fill $base-duration $base-ease
+            -o-transition: fill $base-duration $base-ease
+            transition: fill $base-duration $base-ease
+            fill: $color-white-dark
+        .content
+          background-color: $color-white-dark
+          .header 
+            [class*="btn-"].btn-menu
+              span 
+                background-color: $color-black-light
+                &:nth-child(1)
+  	              transform: translateX(-4px)
+                &:nth-child(3)
+  	              transform: translateX(4px)
+            [class*="btn-"].btn-close
+              span 
+                background-color: $color-black-light
+          .display
+            &::after
+              background: linear-gradient(90deg, rgba($color-white-dark,1) 0%, rgba($color-white-dark,1) 20%, rgba($color-white-dark,0) 100%)
+            &::before
+              background: linear-gradient(270deg, rgba($color-white-dark,1) 0%, rgba($color-white-dark,1) 20%, rgba($color-white-dark,0) 100%)
+            .old-equation
+              color: rgba($color-black-light, .3)
+            .current-equation
+              color: $color-black-light
+          .keyboard
+            background-color: $color-white-light
+            .row
+              .box-button
+                button
+                  &.helper
+                    color: rgba($color-black-light, .5)
+                  &.number
+                    color: $color-black-light
+                  &:focus,
+                  &.focus
+                    background-color: rgba($color-black-medium, .08)
+                  &:active,
+                  &.active
+                    background-color: rgba($color-black-medium, .08)
+                    box-shadow: 0px 0px 0px 5px rgba($color-black-medium, .03)
+      [class*="credit-"]
+        color: $color-white-dark
+        a
+          &:hover,
+          &:focus,
+          &:visited,
+            color: $color-white-light
+
+.selection-none
+  -webkit-touch-callout: none
+  -webkit-user-select: none
+  -khtml-user-select: none
+  -moz-user-select: none
+  -ms-user-select: none
+  user-select: none
 
 @keyframes down-up
   0%
@@ -261,3 +569,28 @@
     transform: translate(0, -50%)
   100%
     transform: translate(0, 0%)
+
+@media (max-width: 768px)
+  .App 
+    &::after,
+    &::before 
+      animation-name: none
+    .main-container
+      .calculator
+        display: absolute
+        width: 100%
+        height: 100%
+        .inner
+          .notch
+            display: none
+          .content
+            height: 100%
+            border-bottom-left-radius: 0
+            border-bottom-right-radius: 0
+            .header
+              [class*="btn-"]
+                width: 40px
+              .centered
+                width: calc(100% - 80px)
+      [class*="credit-"]
+        display: none
