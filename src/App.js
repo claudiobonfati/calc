@@ -9,7 +9,6 @@ class App extends React.Component {
       equation_first: "",
       equation_operator: "",
       equation_last: "",
-      equation_completed: false,
       old_equation_first: "",
       old_equation_operator: "",
       old_equation_last: "",
@@ -24,6 +23,7 @@ class App extends React.Component {
     // Add all event listeners
     document.addEventListener("keydown", event => {
       if (["0","1","2","3","4","5","6","7","8","9","C","Clear","Delete","Backspace","%",".","/","*","-","+","=","Enter"].indexOf(event.key) > -1) { 
+        event.preventDefault();
         this.onButtonClick(event.key);
       }
     }, false);
@@ -93,23 +93,24 @@ class App extends React.Component {
     
     if (button === "=" || button === "Enter") {
       // Handle call to calculate function
-      if (!this.state.equation_completed) {
+      if (this.state.old_equation_result === "") {
         if (this.state.equation_operator !== "") {
-         if (this.state.equation_last === "") {
-          this.setState({
-            equation_last: this.state.equation_first,
-          }, () => {
+          if (this.state.equation_last === "") {
+            console.log('there');
+            this.setState({
+              equation_last: this.state.equation_first,
+            }, () => {
+              this.calc();
+            });
+          } else {
             this.calc();
-          });
-         } else {
-            this.calc();
-         }
+          }
         }
       } else {
         if (this.state.equation_operator !== "") {
           if (this.state.equation_last === "") {
             this.setState({
-              equation_last: "0",
+              equation_last: this.state.equation_first,
             }, () => {
               this.calc();
             });
@@ -117,12 +118,14 @@ class App extends React.Component {
             this.calc();
           }
         } else {
-          this.setState({
-            equation_operator: this.state.old_equation_operator,
-            equation_last: this.state.old_equation_last,
-          }, () => {
-            this.calc();
-          });
+          if (this.state.old_equation_operator !== "" && this.state.old_equation_last !== "") {
+            this.setState({
+              equation_operator: this.state.old_equation_operator,
+              equation_last: this.state.old_equation_last,
+            }, () => {
+              this.calc();
+            });
+          }
         }
       }
 
@@ -134,7 +137,7 @@ class App extends React.Component {
     } else if (["CE", "Backspace"].indexOf(button) > -1) {
       // Clear entry
       if (this.state.equation_first !== "" && this.state.equation_operator === "") {
-        if (!this.state.equation_completed) {
+        if (this.state.old_equation_result === "") {
           this.setState({
             equation_first: this.state.equation_first.toString().slice(0, -1)
           }); 
@@ -177,11 +180,13 @@ class App extends React.Component {
       this.focusButton(button);
     } else if (button === ".") {
       // Handle break to decimal values
-      if (this.state.equation_first !== "" && this.state.equation_first.indexOf(".") === -1 && this.state.equation_operator === "") { // If current input is 'equation_first'
+      if (this.state.equation_first !== "" && this.state.equation_first.indexOf(".") === -1 && this.state.equation_operator === "") { 
+        // If current input is 'equation_first'
         this.setState({
           equation_first: this.state.equation_first + ".",
         });
-      } else if (this.state.equation_last !== "" && this.state.equation_last.indexOf(".") === -1 && this.state.equation_operator !== "") { // If current input is 'equation_last'
+      } else if (this.state.equation_last !== "" && this.state.equation_last.indexOf(".") === -1 && this.state.equation_operator !== "") { 
+        // If current input is 'equation_last'
         this.setState({
           equation_last: this.state.equation_last + ".",
         });
@@ -207,18 +212,22 @@ class App extends React.Component {
     } else if (["1","2","3","4","5","6","7","8","9"].indexOf(button) > -1) {
       // Handle input numbers to operation (except '0')
       if (!this.state.equation_operator) {
-        if (this.state.equation_completed && this.state.old_equation_result === this.state.equation_first) {
+        if (this.state.old_equation_result !== "" && this.state.old_equation_result === this.state.equation_first) {
           // Clear data if user try to add value upon last result 
           this.clear();
-        }
-        if (this.state.equation_first !== "0") {
-          this.setState({
-            equation_first: this.state.equation_first + button
-          });
-        } else {
           this.setState({
             equation_first: button
           });
+        } else { 
+          if (this.state.equation_first !== "0") {
+            this.setState({
+              equation_first: this.state.equation_first + button
+            });
+          } else {
+            this.setState({
+              equation_first: button
+            });
+          }
         }
       } else {
         if (this.state.equation_last !== "0") {
@@ -235,18 +244,25 @@ class App extends React.Component {
       this.focusButton(button);
     } else if (button === "0") {
       // Handle input number 0 to operation
-
-      if (!this.state.equation_operator) {
-        if (this.state.equation_first !== "0") {
-          this.setState({
-            equation_first: this.state.equation_first + button
-          });
-        }
-      } else {
-        if (this.state.equation_first !== "0") {
-          this.setState({
-            equation_last: this.state.equation_last + button
-          });
+      if (this.state.old_equation_result !== "" && this.state.old_equation_result === this.state.equation_first) {
+        // Clear data if user try to add value upon last result 
+        this.clear();
+        this.setState({
+          equation_first: button
+        });
+      } else { 
+        if (!this.state.equation_operator) {
+          if (this.state.equation_first !== "0") {
+            this.setState({
+              equation_first: this.state.equation_first + button
+            });
+          }
+        } else {
+          if (this.state.equation_first !== "0") {
+            this.setState({
+              equation_last: this.state.equation_last + button
+            });
+          }
         }
       }
 
@@ -259,6 +275,9 @@ class App extends React.Component {
       focus_button: button,
       active_button: button,
     });
+
+    // Remove focus from any button
+    document.querySelector("h1").focus();
   }
 
   calc = () => {
@@ -280,21 +299,20 @@ class App extends React.Component {
         break;
 
       default: 
-        result = "Ops...";
+        result = "";
         break;
     } 
 
     this.setState({
-      old_equation_first: this.state.equation_first,
-      old_equation_operator: this.state.equation_operator,
-      old_equation_last: this.state.equation_last,
-      old_equation_result: result,
+      old_equation_first: this.state.equation_first.toString(),
+      old_equation_operator: this.state.equation_operator.toString(),
+      old_equation_last: this.state.equation_last.toString(),
+      old_equation_result: result.toString(),
     }, () => {
       this.setState({
-        equation_first: result,
+        equation_first: result.toString(),
         equation_operator: "",
         equation_last: "",
-        equation_completed: true,
       });
     });
   }
@@ -304,7 +322,6 @@ class App extends React.Component {
       equation_first: "",
       equation_operator: "",
       equation_last: "",
-      equation_completed: false,
       old_equation_first: "",
       old_equation_operator: "",
       old_equation_last: "",
@@ -348,9 +365,29 @@ class App extends React.Component {
     // Vibrate mobile phone just for fun
     if (window.navigator) window.navigator.vibrate([100,50,100])
 
-    // PWA exit app
-    if (navigator.app) navigator.app.exitApp();
-    return;
+    let btnCls = document.querySelector(".btn-close");
+
+    if(!this.hasClass(btnCls, 'rotate')) {
+      this.addClass(btnCls, 'rotate');
+      setTimeout(() => {
+          this.removeClass(btnCls, 'rotate');
+      }, 300);
+    }
+  }
+
+  hasClass = (ele, cls) => {
+    return !!ele.className.match(new RegExp('(\\s|^)'+cls+'(\\s|$)'));
+  }
+
+  addClass = (ele, cls) => {
+    if (!this.hasClass(ele, cls)) ele.className += " "+cls;
+  }
+
+  removeClass = (ele, cls) => {
+    if (this.hasClass(ele, cls)) {
+      var reg = new RegExp('(\\s|^)'+cls+'(\\s|$)');
+      ele.className=ele.className.replace(reg,' ');
+    }
   }
 
   render() {

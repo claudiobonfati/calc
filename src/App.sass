@@ -32,6 +32,8 @@ $color-red: #FF3E39
   .main-container .calculator .inner .content .header .centered,
   .main-container .calculator .inner .content .header .btn-menu span,
   .main-container .calculator .inner .content .header .btn-close span,
+  .main-container .calculator .inner .content .display::after,
+  .main-container .calculator .inner .content .display::before,
   .main-container .calculator .inner .content .display .old-equation,
   .main-container .calculator .inner .content .display .current-equation,
   .main-container .calculator .inner .content .keyboard
@@ -162,14 +164,16 @@ $color-red: #FF3E39
                   width: 40%
                   left: 30%
                   top: 50%
-                  margin-top: -1.5px
                 span:nth-child(3)
                   width: 30%
                   left: 30%
-                  bottom: 11px
+                  bottom: 9px
                   
               &.btn-close
                 padding: 10px 5px
+                transition: ease-in transform .3s
+                &.rotate
+                  transform: rotate(90deg)
                 span 
                   position: absolute
                   background-color: $color-white-light
@@ -191,7 +195,7 @@ $color-red: #FF3E39
 
             &::after,
             &::before,
-              display: none
+              display: block
               content: " "
               position: absolute
               width: 25px
@@ -201,10 +205,10 @@ $color-red: #FF3E39
 
             &::after
               left: 0
-              background: linear-gradient(90deg, rgba($color-black-dark,1) 0%, rgba($color-black-dark,1) 20%, rgba($color-black-dark,0) 100%)
+              box-shadow: inset 20px 0px 8px -10px $color-black-dark
             &::before
               right: 0
-              background: linear-gradient(270deg, rgba($color-black-dark,1) 0%, rgba($color-black-dark,1) 20%, rgba($color-black-dark,0) 100%)
+              box-shadow: inset -20px 0px 8px -10px $color-black-dark
 
             .old-equation
               position: absolute
@@ -358,10 +362,10 @@ $color-red: #FF3E39
                   display: inline-block
                   border-radius: 50%
                   font-size: 1em
-                  -webkit-transition: all .2s $base-ease
-                  -moz-transition: all .2s $base-ease
-                  -o-transition: all .2s $base-ease
-                  transition: all .2s $base-ease
+                  -webkit-transition: all .5s $base-ease
+                  -moz-transition: all .5s $base-ease
+                  -o-transition: all .5s $base-ease
+                  transition: all .5s $base-ease
 
                   &.helper
                     color: rgba($color-white-light, .3)
@@ -373,7 +377,10 @@ $color-red: #FF3E39
                     color: $color-white-light
                     font-weight: bold
 
-                  &:focus,
+                  &:focus
+                    outline: none
+                    box-shadow: none
+
                   &.focus
                     outline: none
                     box-shadow: none
@@ -390,7 +397,6 @@ $color-red: #FF3E39
                     font-weight: bold
                     box-shadow: 0px 0px 0px 5px rgba(#ff2520, .3)
 
-                    // &:focus,
                     &.focus
                       background-color: darken(#ff2520, 5)
 
@@ -452,9 +458,9 @@ $color-red: #FF3E39
                 background-color: $color-white-light
           .display
             &::after
-              background: linear-gradient(90deg, rgba($color-black-dark,1) 0%, rgba($color-black-dark,1) 20%, rgba($color-black-dark,0) 100%)
+              box-shadow: inset 20px 0px 8px -10px $color-black-dark
             &::before
-              background: linear-gradient(270deg, rgba($color-black-dark,1) 0%, rgba($color-black-dark,1) 20%, rgba($color-black-dark,0) 100%)
+              box-shadow: inset -20px 0px 8px -10px $color-black-dark
             .old-equation
               color: rgba($color-white-light, .3)
             .current-equation
@@ -468,7 +474,6 @@ $color-red: #FF3E39
                     color: rgba($color-white-light, .3)
                   &.number
                     color: $color-white-light
-                  &:focus,
                   &.focus
                     background-color: rgba($color-white-medium, .1)
                   &:active,
@@ -515,9 +520,9 @@ $color-red: #FF3E39
                 background-color: $color-black-light
           .display
             &::after
-              background: linear-gradient(90deg, rgba($color-white-dark,1) 0%, rgba($color-white-dark,1) 20%, rgba($color-white-dark,0) 100%)
+              box-shadow: inset 20px 0px 8px -10px $color-white-dark
             &::before
-              background: linear-gradient(270deg, rgba($color-white-dark,1) 0%, rgba($color-white-dark,1) 20%, rgba($color-white-dark,0) 100%)
+              box-shadow: inset -20px 0px 8px -10px $color-white-dark
             .old-equation
               color: rgba($color-black-light, .3)
             .current-equation
@@ -531,7 +536,6 @@ $color-red: #FF3E39
                     color: rgba($color-black-light, .5)
                   &.number
                     color: $color-black-light
-                  &:focus,
                   &.focus
                     background-color: rgba($color-black-medium, .08)
                   &:active,
