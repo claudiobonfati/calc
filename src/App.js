@@ -6,16 +6,18 @@ class App extends React.Component {
     super();
 
     this.state = {
-      equation_first: "",
-      equation_operator: "",
-      equation_last: "",
-      old_equation_first: "",
-      old_equation_operator: "",
-      old_equation_last: "",
-      old_equation_result: "",
-      focus_button: "",
-      active_button: "",
+      equationFirst: "",
+      equationOperator: "",
+      equationLast: "",
+      oldEquationFirst: "",
+      oldEquationOperator: "",
+      oldEquationLast: "",
+      oldEquationProduct: "",
+      focusedButton: "",
+      activeButton: "",
       theme: "dark",
+      nanMessage: "Not a number",
+      nanState: false,
     }
   }
 
@@ -35,7 +37,7 @@ class App extends React.Component {
     return (
       <div className="box-button selection-none">
         <button 
-        className={c + (this.state.focus_button === value  ? ' focus' : '') + (this.state.active_button === value  ? ' active' : '')} 
+        className={c + (this.state.focusedButton === value  ? ' focus' : '') + (this.state.activeButton === value  ? ' active' : '')} 
         onClick={(e) => this.onButtonClick(value)} 
         arial-label={arial}>
           {value}
@@ -46,42 +48,42 @@ class App extends React.Component {
 
   clearButtonActive = () => {
     this.setState({
-      active_button: "",
+      activeButton: "",
     });
   }
 
   renderDisplay = () => {
     return (
       <div className="display">
-        <div className={('old-equation count-characters-' + this.sumCharactersInArray([this.state.old_equation_first, this.state.old_equation_operator, this.state.old_equation_last]))}>
-          {this.maskDecimal(this.state.old_equation_first)}
+        <div className={('old-equation count-characters-' + this.sumCharactersInArray([this.state.oldEquationFirst, this.state.oldEquationOperator, this.state.oldEquationLast]))}>
+          {this.maskDecimal(this.state.oldEquationFirst)}
           {this.renderOldOperator()}
-          {this.maskDecimal(this.state.old_equation_last)}
+          {this.maskDecimal(this.state.oldEquationLast)}
         </div>
-        <div className={('current-equation count-characters-' + this.sumCharactersInArray([this.state.equation_first, this.state.equation_operator, this.state.equation_last]))}>
-          {this.maskDecimal(this.state.equation_first)}
+        <div className={('current-equation count-characters-' + this.sumCharactersInArray([this.state.equationFirst, this.state.equationOperator, this.state.equationLast]))}>
+          {this.maskDecimal(this.state.equationFirst)}
           {this.renderOperator()}
-          {this.maskDecimal(this.state.equation_last)}
+          {this.maskDecimal(this.state.equationLast)}
         </div>
       </div>
     );
   }
 
   renderOldOperator = () => {
-    if (this.state.old_equation_operator !== "") {
+    if (this.state.oldEquationOperator !== "") {
       return (
         <span className="operator">
-          {this.state.old_equation_operator}
+          {this.state.oldEquationOperator}
         </span>
       );
     }
   }
 
   renderOperator = () => {
-    if (this.state.equation_operator !== "") {
+    if (this.state.equationOperator !== "") {
       return (
         <span className="operator">
-          {this.state.equation_operator}
+          {this.state.equationOperator}
         </span>
       );
     }
@@ -90,15 +92,21 @@ class App extends React.Component {
   onButtonClick = button => {
     // Vibrate mobile phone just for fun
     if (window.navigator) window.navigator.vibrate(50)
-    
+
+    if (this.state.nanState) {
+      this.setState({
+        nanState: false,
+      });
+      this.clear();
+    }
+
     if (button === "=" || button === "Enter") {
       // Handle call to calculate function
-      if (this.state.old_equation_result === "") {
-        if (this.state.equation_operator !== "") {
-          if (this.state.equation_last === "") {
-            console.log('there');
+      if (this.state.oldEquationProduct === "") {
+        if (this.state.equationOperator !== "") {
+          if (this.state.equationLast === "") {
             this.setState({
-              equation_last: this.state.equation_first,
+              equationLast: this.state.equationFirst,
             }, () => {
               this.calc();
             });
@@ -107,10 +115,10 @@ class App extends React.Component {
           }
         }
       } else {
-        if (this.state.equation_operator !== "") {
-          if (this.state.equation_last === "") {
+        if (this.state.equationOperator !== "") {
+          if (this.state.equationLast === "") {
             this.setState({
-              equation_last: this.state.equation_first,
+              equationLast: this.state.equationFirst,
             }, () => {
               this.calc();
             });
@@ -118,10 +126,10 @@ class App extends React.Component {
             this.calc();
           }
         } else {
-          if (this.state.old_equation_operator !== "" && this.state.old_equation_last !== "") {
+          if (this.state.oldEquationOperator !== "" && this.state.oldEquationLast !== "") {
             this.setState({
-              equation_operator: this.state.old_equation_operator,
-              equation_last: this.state.old_equation_last,
+              equationOperator: this.state.oldEquationOperator,
+              equationLast: this.state.oldEquationLast,
             }, () => {
               this.calc();
             });
@@ -136,42 +144,42 @@ class App extends React.Component {
       this.focusButton("AC");
     } else if (["CE", "Backspace"].indexOf(button) > -1) {
       // Clear entry
-      if (this.state.equation_first !== "" && this.state.equation_operator === "") {
-        if (this.state.old_equation_result === "") {
+      if (this.state.equationFirst !== "" && this.state.equationOperator === "") {
+        if (this.state.oldEquationProduct === "") {
           this.setState({
-            equation_first: this.state.equation_first.toString().slice(0, -1)
+            equationFirst: this.state.equationFirst.toString().slice(0, -1)
           }); 
         } else {
           this.clear();
         }
-      } else if (this.state.equation_last !== "") {
+      } else if (this.state.equationLast !== "") {
         this.setState({
-          equation_last: this.state.equation_last.toString().slice(0, -1)
+          equationLast: this.state.equationLast.toString().slice(0, -1)
         }); 
-      } else if (this.state.equation_operator !== "" && this.state.equation_last === "") {
+      } else if (this.state.equationOperator !== "" && this.state.equationLast === "") {
         this.clear();
       }
 
       this.focusButton("CE");
     } else if (button === "+/-") {
       // Switch signal
-      if (this.state.equation_first !== "" && this.state.equation_operator === "") {
+      if (this.state.equationFirst !== "" && this.state.equationOperator === "") {
         this.setState({
-          equation_first: -this.state.equation_first
+          equationFirst: -this.state.equationFirst
         }); 
-      } else if (this.state.equation_last !== "") {
+      } else if (this.state.equationLast !== "") {
         this.setState({
-          equation_last: -this.state.equation_last
+          equationLast: -this.state.equationLast
         }); 
       }
 
       this.focusButton(button);
     } else if (button === "%") {
       // Handle Percent action
-      if (this.state.equation_first !== "") {
+      if (this.state.equationFirst !== "") {
         this.setState({
-          equation_operator: "%",
-          equation_last: 100,
+          equationOperator: "%",
+          equationLast: 100,
         }, () => {
           this.calc();
         }); 
@@ -180,30 +188,38 @@ class App extends React.Component {
       this.focusButton(button);
     } else if (button === ".") {
       // Handle break to decimal values
-      if (this.state.equation_first !== "" && this.state.equation_first.indexOf(".") === -1 && this.state.equation_operator === "") { 
-        // If current input is 'equation_first'
+      if (this.state.equationFirst !== "" && this.state.equationFirst.indexOf(".") === -1 && this.state.equationOperator === "") { 
+        // If current input is 'equationFirst'
         this.setState({
-          equation_first: this.state.equation_first + ".",
+          equationFirst: this.state.equationFirst + ".",
         });
-      } else if (this.state.equation_last !== "" && this.state.equation_last.indexOf(".") === -1 && this.state.equation_operator !== "") { 
-        // If current input is 'equation_last'
+      } else if (this.state.equationLast !== "" && this.state.equationLast.indexOf(".") === -1 && this.state.equationOperator !== "") { 
+        // If current input is 'equationLast'
         this.setState({
-          equation_last: this.state.equation_last + ".",
+          equationLast: this.state.equationLast + ".",
         });
       }
 
       this.focusButton(button);
     } else if (["/", "*", "+", "-"].indexOf(button) > -1) {
       // Handle basic operators
-      if (this.state.equation_first !== "") {
-        if (this.state.equation_operator === "" || this.state.equation_last === "") {
+      if (this.state.equationFirst !== "") {
+        if (this.state.equationOperator === "" || this.state.equationLast === "") {
           this.setState({
-            equation_operator: button,
+            equationOperator: button,
           }); 
         } else {
           this.calc();
+          
+          if (this.state.nanState) {
+            this.setState({
+              equationFirst: "0",
+              nanState: false,
+            });
+          }
+
           this.setState({
-            equation_operator: button,
+            equationOperator: button,
           });
         }
 
@@ -211,32 +227,32 @@ class App extends React.Component {
       }
     } else if (["1","2","3","4","5","6","7","8","9"].indexOf(button) > -1) {
       // Handle input numbers to operation (except '0')
-      if (!this.state.equation_operator) {
-        if (this.state.old_equation_result !== "" && this.state.old_equation_result === this.state.equation_first) {
+      if (!this.state.equationOperator) {
+        if (this.state.oldEquationProduct !== "" && this.state.oldEquationProduct === this.state.equationFirst) {
           // Clear data if user try to add value upon last result 
           this.clear();
           this.setState({
-            equation_first: button
+            equationFirst: button
           });
         } else { 
-          if (this.state.equation_first !== "0") {
+          if (this.state.equationFirst !== "0") {
             this.setState({
-              equation_first: this.state.equation_first + button
+              equationFirst: this.state.equationFirst + button
             });
           } else {
             this.setState({
-              equation_first: button
+              equationFirst: button
             });
           }
         }
       } else {
-        if (this.state.equation_last !== "0") {
+        if (this.state.equationLast !== "0") {
           this.setState({
-            equation_last: this.state.equation_last + button
+            equationLast: this.state.equationLast + button
           });
         } else {
           this.setState({
-            equation_last: button
+            equationLast: button
           });
         }
       }
@@ -244,23 +260,23 @@ class App extends React.Component {
       this.focusButton(button);
     } else if (button === "0") {
       // Handle input number 0 to operation
-      if (this.state.old_equation_result !== "" && this.state.old_equation_result === this.state.equation_first) {
+      if (this.state.oldEquationProduct !== "" && this.state.oldEquationProduct === this.state.equationFirst && this.state.equationOperator === "") {
         // Clear data if user try to add value upon last result 
         this.clear();
         this.setState({
-          equation_first: button
+          equationFirst: button
         });
       } else { 
-        if (!this.state.equation_operator) {
-          if (this.state.equation_first !== "0") {
+        if (!this.state.equationOperator) {
+          if (this.state.equationFirst !== "0") {
             this.setState({
-              equation_first: this.state.equation_first + button
+              equationFirst: this.state.equationFirst + button
             });
           }
         } else {
-          if (this.state.equation_first !== "0") {
+          if (this.state.equationLast !== "0") {
             this.setState({
-              equation_last: this.state.equation_last + button
+              equationLast: this.state.equationLast + button
             });
           }
         }
@@ -272,8 +288,8 @@ class App extends React.Component {
 
   focusButton = button => {
     this.setState({
-      focus_button: button,
-      active_button: button,
+      focusedButton: button,
+      activeButton: button,
     });
 
     // Remove focus from any button
@@ -283,48 +299,59 @@ class App extends React.Component {
   calc = () => {
     let result = null;
 
-    switch (this.state.equation_operator) {
+    switch (this.state.equationOperator) {
       case "/":
       case "%":
-        result = Number(this.state.equation_first) / Number(this.state.equation_last);
+        result = Number(this.state.equationFirst) / Number(this.state.equationLast);
         break;
       case "*":
-        result = Number(this.state.equation_first) * Number(this.state.equation_last);
+        result = Number(this.state.equationFirst) * Number(this.state.equationLast);
         break;
       case "+":
-        result = Number(this.state.equation_first) + Number(this.state.equation_last);
+        result = Number(this.state.equationFirst) + Number(this.state.equationLast);
         break;
       case "-":
-        result = Number(this.state.equation_first) - Number(this.state.equation_last);
+        result = Number(this.state.equationFirst) - Number(this.state.equationLast);
         break;
 
       default: 
         result = "";
         break;
-    } 
+    }
+
+    if (result !== "" && !isFinite(result)) {
+      result = this.state.nanMessage;
+      this.setState({
+        nanState: true,
+      }); 
+    } else {
+      this.setState({
+        nanState: false,
+      }); 
+    };
 
     this.setState({
-      old_equation_first: this.state.equation_first.toString(),
-      old_equation_operator: this.state.equation_operator.toString(),
-      old_equation_last: this.state.equation_last.toString(),
-      old_equation_result: result.toString(),
+      oldEquationFirst: this.state.equationFirst.toString(),
+      oldEquationOperator: this.state.equationOperator.toString(),
+      oldEquationLast: this.state.equationLast.toString(),
+      oldEquationProduct: result.toString(),
     }, () => {
       this.setState({
-        equation_first: result.toString(),
-        equation_operator: "",
-        equation_last: "",
+        equationFirst: result.toString(),
+        equationOperator: "",
+        equationLast: "",
       });
     });
   }
 
   clear = () => {
     this.setState({
-      equation_first: "",
-      equation_operator: "",
-      equation_last: "",
-      old_equation_first: "",
-      old_equation_operator: "",
-      old_equation_last: "",
+      equationFirst: "",
+      equationOperator: "",
+      equationLast: "",
+      oldEquationFirst: "",
+      oldEquationOperator: "",
+      oldEquationLast: "",
     });
   }
 
