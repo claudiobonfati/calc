@@ -91,7 +91,7 @@ class App extends React.Component {
 
   onButtonClick = button => {
     // Vibrate mobile phone just for fun
-    if (window.navigator) window.navigator.vibrate(50)
+    if ("vibrate" in window.navigator) window.navigator.vibrate(50)
 
     if (this.state.nanState) {
       this.setState({
@@ -150,7 +150,13 @@ class App extends React.Component {
             equationFirst: this.state.equationFirst.toString().slice(0, -1)
           }); 
         } else {
-          this.clear();
+          if (this.state.equationFirst === this.state.oldEquationProduct) {
+            this.clear();
+          } else {
+            this.setState({
+              equationFirst: this.state.equationFirst.toString().slice(0, -1)
+            });
+          }
         }
       } else if (this.state.equationLast !== "") {
         this.setState({
@@ -369,7 +375,7 @@ class App extends React.Component {
 
   switchThene = () => {
     // Vibrate mobile phone just for fun
-    if (window.navigator) window.navigator.vibrate(50)
+    if ("vibrate" in window.navigator) window.navigator.vibrate(50)
     
     let metaThemeColor = document.querySelector("meta[name=theme-color]");
     
@@ -390,7 +396,7 @@ class App extends React.Component {
 
   closeButton = () => {
     // Vibrate mobile phone just for fun
-    if (window.navigator) window.navigator.vibrate([100,50,100])
+    if ("vibrate" in window.navigator) window.navigator.vibrate([100,50,100])
 
     let btnCls = document.querySelector(".btn-close");
 
