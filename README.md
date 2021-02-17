@@ -16,7 +16,7 @@ The idea of the App is to test my skills building an interactable calculator wit
 
 This project is part of my personal portfolio, and as expected from a calculator, even a simple one, there are lots of challenging details from a logic point of view. I'll be more than happy if you could provide me any feedback about the project, code, code structure and so on!
 
-Connect with me [LinkedIn](https://www.linkedin.com/in/claudiobonfati/).
+Connect with me at [LinkedIn](https://www.linkedin.com/in/claudiobonfati/).
 
 ## Quick notes
 
@@ -58,7 +58,7 @@ Access the application at http://localhost:3000/.
 
 You can send how many PR's you want, I'll be glad to analyse and accept them!
 
-Connect with me [LinkedIn](https://www.linkedin.com/in/claudiobonfati/)
+Connect with me at [LinkedIn](https://www.linkedin.com/in/claudiobonfati/)
 
 Thank you!
 
